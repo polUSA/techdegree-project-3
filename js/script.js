@@ -57,8 +57,8 @@ $(document).ready(function() {
 			$("#colors-js-puns").fadeOut(200);
 		}
 	});
-
 	//activities
+
 	$(".activities").on("change", 'input[type="checkbox"]', function(event) {
 		const $activities = $(".activities label input");
 
@@ -70,36 +70,37 @@ $(document).ready(function() {
 
 		//contains jQuery input element
 		const $clicked = $(this);
-
+		console.log(`OUTSIDE LOOP: ${$clicked.prop("checked")}`);
 		//contains a regex obj
 		const regexDate = /\w+\s*\d{1,2}(am|pm)-\d{1,2}(am|pm)/gi;
 
-		//match and 'extract' the regex patter and remove any space
-		//date is a string
+		//match and 'extract' the regex patter and remove any space, date is a string
 		let date = $clickedText.match(regexDate)[0].replace(/\s+/g, "");
 
-		$activities.each( function(i, item) {
+		$activities.each(function(i, item) {
+			console.log(`WHILE LOOPING: ${$clicked.prop("checked")}`);
       
-      const $currentItemText = $(this)
-				.parent()
-				.text()
-        .replace(/\s+/g, "");
-
-			if (!$clicked.prop("checked")) {
-        $(item).prop("disabled", false);
-					$(item)
-						.parent()
-						.css("textDecoration", "none");
-			} else {
-				if ($currentItemText.includes(date) && !$(item).is($clicked)) {
-					$(item).prop("disabled", true);
-					$(item)
-						.parent()
-						.css("textDecoration", "line-through");
-				}
+      const $currentItemText = $(this).parent().text().replace(/\s+/g, "");
+      
+      //if an activity is ticked, verify if other elements includes the same date/time and if so
+      //disable and strike-thorough those elements that are not the selected one
+			if ( $clicked.prop("checked") && $currentItemText.includes(date) && !$(item).is($clicked) ) {     
+          $(item).prop("disabled", true);
+          $(item).parent().css({textDecoration: 'line-through', color: 'red'});
+			} else { 
+          $(item).prop("disabled", false);
+          $(item).parent().css({textDecoration: 'none', color: 'black'});
 			}
 		});
-	});
-});
+  });
+  
 
-//obj instanceof jQuery
+
+
+
+
+
+
+
+//finish documnent ready
+});
