@@ -1,3 +1,6 @@
+//variable to hold total price
+let totalPrice = 0;
+
 //make sure the DOM is fully loaded before doing anything
 $(document).ready(function() {
 	//hide not needed elementns for now
@@ -15,7 +18,11 @@ $(document).ready(function() {
 		}
 	});
 
-	//handy hide all function - accept a jquery collection
+  //create the HTML element to show total price
+  const $total = $('<p id="total-price">TOTAL PRICE: $<span>0</span></p>');
+  $('.activities').append($total);
+  
+  //handy hide all function - accept a jquery collection
 	function hideAll(collection) {
 		collection.each(function() {
 			$(this).hide();
@@ -61,37 +68,56 @@ $(document).ready(function() {
 
 	$(".activities").on("change", 'input[type="checkbox"]', function(event) {
 		const $activities = $(".activities label input");
-
-		//contains a string
-		const $clickedText = $(this)
-			.parent()
-			.text()
-			.replace(/\s+/g, "");
-
-		//contains jQuery input element
-		const $clicked = $(this);
-		console.log(`OUTSIDE LOOP: ${$clicked.prop("checked")}`);
+    //contains jQuery input element (event.target)
+    const $clicked = $(this);
+    //contains a string
+		const $clickedText = $(this).parent().text().replace(/\s+/g, "");
 		//contains a regex obj
 		const regexDate = /\w+\s*\d{1,2}(am|pm)-\d{1,2}(am|pm)/gi;
 
-		//match and 'extract' the regex patter and remove any space, date is a string
-		let date = $clickedText.match(regexDate)[0].replace(/\s+/g, "");
+    //match and 'extract' the regex pattern and remove any space, date is a string.
+    //conditional if is used to avoid an error on the first activity that does not include a date
+    //which returns null to the variable date and not an array. therefore [0] will throw an error
+    let date;
+    if(regexDate.test($clickedText)){
+		date = $clickedText.match(regexDate)[0].replace(/\s+/g, "");
+    }
+    //priceCliked is a string in this format "100"
+    const priceClicked = $clickedText.match(/\d{3}$/)[0];
+    
+    //total price
+    if($(this).prop('checked')){
+      totalPrice += parseInt(priceClicked,10)
+    } else{
+      totalPrice -= parseInt(priceClicked,10)
+    }
 
-		$activities.each(function(i, item) {
-			console.log(`WHILE LOOPING: ${$clicked.prop("checked")}`);
-      
+    $('#total-price span').text(totalPrice);
+    //looping the activities (input checkboxes) to enable/disable those with conflicting time
+    $activities.each(function(i, item) {
       const $currentItemText = $(this).parent().text().replace(/\s+/g, "");
-      
       //if an activity is ticked, verify if other elements includes the same date/time and if so
       //disable and strike-thorough those elements that are not the selected one
 			if ( $clicked.prop("checked") && $currentItemText.includes(date) && !$(item).is($clicked) ) {     
           $(item).prop("disabled", true);
           $(item).parent().css({textDecoration: 'line-through', color: 'red'});
-			} else { 
+          
+			} else if($clicked.prop("checked") && $currentItemText.includes(date) && $(item).is($clicked)) { 
           $(item).prop("disabled", false);
           $(item).parent().css({textDecoration: 'none', color: 'black'});
-			}
-		});
+          
+          
+      } else if (!$clicked.prop("checked") && $currentItemText.includes(date) && $(item).prop('disabled')){
+        //enable other itme with the same date
+        $(item).prop("disabled", false);
+        $(item).parent().css({textDecoration: 'none', color: 'black'});
+        
+      }
+    });
+    
+    
+    
+    
   });
   
 
