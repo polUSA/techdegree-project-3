@@ -98,7 +98,7 @@
 
         <label for="payment">I'm going to pay with:</label>
         <select id="payment" name="user_payment">
-          <option value="select_method">Select Payment Method</option>
+          <option value="select_method" disabled>Select Payment Method</option>
           <option value="credit card">Credit Card</option>
           <option value="paypal">PayPal</option>
           <option value="bitcoin">Bitcoin</option>
@@ -145,7 +145,7 @@
           </select>
         </div>
 
-        <div>
+        <div id="paypal-info">
           <p>
             If you selected the PayPal option we'll take you to Paypal's site
             to set up your billing information, when you click “Register”
@@ -153,7 +153,7 @@
           </p>
         </div>
 
-        <div>
+        <div id="bitcoin-info">
           <p>
             If you selected the Bitcoin option we'll take you to the Coinbase
             site to set up your billing information. Due to the nature of

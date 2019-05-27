@@ -5,7 +5,8 @@ let totalPrice = 0;
 $(document).ready(function() {
 	//hide not needed elementns for now
 	$("#other-job-container").hide();
-	$("#colors-js-puns").hide();
+  $("#colors-js-puns").hide();
+  
 	//position the cursor on the name input field
 	$("#name").focus();
 
@@ -64,8 +65,8 @@ $(document).ready(function() {
 			$("#colors-js-puns").fadeOut(200);
 		}
 	});
-	//activities
-
+  
+  //activities
 	$(".activities").on("change", 'input[type="checkbox"]', function(event) {
 		const $activities = $(".activities label input");
     //contains jQuery input element (event.target)
@@ -120,13 +121,41 @@ $(document).ready(function() {
     
   });
   
+  //set credit card as default payment and hide info about paypal and bitcoin
+  $('#payment option[value="credit card"]').prop('selected',true)
+  $('#paypal-info').hide();
+  $('#bitcoin-info').hide();
+  //Display payment sections based on the payment option chosen
+  $('#payment').on('change',function(event){
+    switch($(this).val()) {
+      case 'credit card':
+          $('#credit-card').fadeIn(400);
+          $('form').attr({action: 'index.html', method: 'POST'});
+          $('#paypal-info').hide();
+          $('#bitcoin-info').hide();
+          break;
+      case "paypal":
+          $('#credit-card').fadeOut(400);
+          //set the form to redirect to paypal website
+          $('form').attr({action: 'https://www.paypal.com/', method: '', target: "_blank"});
+          $('#paypal-info').show();
+          $('#bitcoin-info').hide();
+          break;
+      case "bitcoin":
+          $('#credit-card').fadeOut(400);
+          $('form').attr({action: 'https://www.coinbase.com/', method: '', target: "_blank"});
+          $('#paypal-info').hide();
+          $('#bitcoin-info').show();
+          break;
+      default:
+          $('form').attr({action: 'index.html', method: 'POST'});      
+    }
 
 
-
-
-
-
-
+  });
+  
+  
+  
 
 //finish documnent ready
 });
