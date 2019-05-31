@@ -52,7 +52,7 @@ $(document).ready(function() {
 			for (let i = 0; i < 3; i++) {
 				$colors.eq(i).show();
 			}
-		}//hide 'js puns' colors option when 'heart js is selected
+		} //hide 'js puns' colors option when 'heart js is selected
 		else if ($(this).val() === "heart js") {
 			hideAll($colors);
 			$("#colors-js-puns").fadeIn(300);
@@ -163,7 +163,7 @@ $(document).ready(function() {
     const regexName = /^[a-zA-z-.\s]+$/i
     const name = $('#name').val();
     if(regexName.test(name)){
-      $('#name').css({border: ""});
+      $('#name').css({border: "2px solid lightgreen"});
       return true;
     } else {
       $('#name').css({border: "2px solid red"});
@@ -272,9 +272,17 @@ $(document).ready(function() {
     }
   })
 
-  //vlaidate email in "real time"
-  $('form').on('keyup', 'input[type="email"]', function(event){
+  //vlaidate in "real time"
+  $('form').on('keyup', '#mail', function(event){
     validateEmail();
+  });
+
+  $('form').on('keyup', '#name', function(event){
+    validateName();
+  })
+
+  $('form').on('keyup', '#credit-card', function(event){
+    validateCreditCard();
   })
 
 //finish document ready
