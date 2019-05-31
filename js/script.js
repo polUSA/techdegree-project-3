@@ -1,8 +1,7 @@
-//variable to hold total price
-let totalPrice = 0;
-
 //make sure the DOM is fully loaded before doing anything
 $(document).ready(function() {
+  //variable to hold total price
+  let totalPrice = 0;
 	//hide not needed elementns for now
 	$("#other-job-container").hide();
   $("#colors-js-puns").hide();
@@ -47,8 +46,7 @@ $(document).ready(function() {
 			for (let i = 0; i < 3; i++) {
 				$colors.eq(i).show();
 			}
-		}
-		//hide 'js puns' colors option when 'heart js is selected
+		}//hide 'js puns' colors option when 'heart js is selected
 		else if ($(this).val() === "heart js") {
 			hideAll($colors);
 			$("#colors-js-puns").fadeIn(300);
@@ -150,12 +148,109 @@ $(document).ready(function() {
       default:
           $('form').attr({action: 'index.html', method: 'POST'});      
     }
-
-
   });
   
-  
-  
+  //form validation section
 
+  function validateName(){
+    //name field must not be empty
+    const regexName = /^[a-zA-z-.\s]+$/i
+    const name = $('#name').val();
+    if(regexName.test(name)){
+      $('#name').css({border: ""});
+      return true;
+    } else {
+      $('#name').css({border: "2px solid red"});
+      return false;
+    }
+  }
+
+  function validateEmail(){
+    const mail = $('#mail').val();
+    const regexMail = /^\w+@\w+\.\w{1,5}$/
+    if(regexMail.test(mail)){
+      $('#mail').css({border: ""});
+      return true;
+    } else {
+      $('#mail').css({border: "2px solid red"});
+      return false;
+    }
+  }
+
+  function validateActivities(){
+    //check if at least one activity was selected
+
+    //create a warning element
+    const $warning = $(`<div id="warning" 
+                        style="background-color: red; 
+                        color: black; width: 50%; height: 30px; line-height: 30px; margin: 0 auto;">
+                        <p style="text-align: center;">You need to register for at least one activity<p>
+                        </div>`);
+    
+    //if no activity is selected append the warning and show it to the user
+    if( $('.activities input:checked').length > 0 ){
+      return true;
+    } else {
+      $($warning).appendTo($('.activities')).hide();
+      $('#warning').fadeIn(800).delay(4000).slideUp(500);
+      return false
+    }
+  }
+
+  //validate all three needed field for credit card payments
+  function validateCreditCard(){
+    const ccNumber = $('#cc-num').val();
+    const regexCC = /^\d{13,16}$/;
+      
+    const zipCode = $('#zip').val();
+    const regexZIP = /^\d{5}$/;
+      
+    const cvv = $('#cvv').val();
+    const regexCVV = /^\d{3}$/;
+    
+    if ( $('#payment option:selected').val() === 'credit card'){
+      
+      if ( regexCC.test(ccNumber) ){
+        $('#cc-num').css({border: "2px solid lightgreen"});
+      } else {
+        $('#cc-num').css({border: "2px solid red"});      
+      }
+      
+      if(regexZIP.test(zipCode)){
+        $('#zip').css({border: "2px solid lightgreen"});      
+      }else {
+        $('#zip').css({border: "2px solid red"});     
+      }
+
+      if(regexCVV.test(cvv)){
+        $('#cvv').css({border: "2px solid lightgreen"});
+      }else {
+        $('#cvv').css({border: "2px solid red"});
+      }
+    }
+    //if any of the three credi card field is not valid return false
+    if( !(regexCC.test(ccNumber)) || !(regexZIP.test(zipCode)) || !(regexCVV.test(cvv)) ){
+      return false;
+    }else {
+      return true;
+    }
+    
+  }
+  //event listener for submit button and validation processes
+  $('form').on('submit', function(event){
+
+    //call all the validator so all the missing/invalid input are highlighted in red
+    validateName();
+    validateEmail();
+    validateActivities();
+    validateCreditCard();
+
+    //if any validator is false, meaning data typed from the user were not ok, prevent the form submission
+    if( !validateName() || !validateEmail() || !validateActivities() || !validateCreditCard() ) {
+      event.preventDefault();
+      $('button[type="submit"]').prop('disabled', true);
+      $('button[type="submit"]').prop('disabled', false);
+    }
+  })
 //finish documnent ready
 });
