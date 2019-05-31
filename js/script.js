@@ -6,7 +6,13 @@ $(document).ready(function() {
 	$("#other-job-container").hide();
   $("#colors-js-puns").hide();
   
-	//position the cursor on the name input field
+  //append and hide email alerts
+  const $emptyEmail = `<span id="emailEmpty" style="color: red;">Email is Mandatory</span>`;
+  $($emptyEmail).insertBefore('input[type="email"]').hide();
+  const $invalidEmail = `<span id="emailInvalid" style="color: red;">Email format is not valid</span>`;
+  $($invalidEmail).insertBefore('input[type="email"]').hide();
+  
+  //position the cursor on the name input field
 	$("#name").focus();
 
 	//show text input when Job Role "Other" is selected
@@ -166,12 +172,25 @@ $(document).ready(function() {
   }
 
   function validateEmail(){
+
     const mail = $('#mail').val();
     const regexMail = /^\w+@\w+\.\w{1,5}$/
-    if(regexMail.test(mail)){
-      $('#mail').css({border: ""});
+
+    if(regexMail.test(mail) && mail !== ""){
+      $('#emailEmpty').hide();
+      $('#emailInvalid').hide();
+      $('#mail').css({border: "2px solid lightgreen"});
       return true;
-    } else {
+    
+    } else if (!regexMail.test(mail) && mail === "" ){     
+      $('#emailInvalid').hide();
+      $('#emailEmpty').show();
+      $('#mail').css({border: "2px solid red"});
+      return false;
+    
+    } else if (!regexMail.test(mail) && mail !== "" ){
+      $('#emailEmpty').hide();
+      $('#emailInvalid').show();
       $('#mail').css({border: "2px solid red"});
       return false;
     }
@@ -194,7 +213,7 @@ $(document).ready(function() {
       $($warning).appendTo($('.activities')).hide();
       $('#warning').fadeIn(800).delay(4000).slideUp(500);
       return false
-    }
+      }
   }
 
   //validate all three needed field for credit card payments
@@ -237,8 +256,7 @@ $(document).ready(function() {
     
   }
   //event listener for submit button and validation processes
-  $('form').on('submit', function(event){
-
+  $('form').on('submit',function(event){
     //call all the validator so all the missing/invalid input are highlighted in red
     validateName();
     validateEmail();
@@ -252,5 +270,10 @@ $(document).ready(function() {
       $('button[type="submit"]').prop('disabled', false);
     }
   })
+
+  $('form').on('keyup', 'input[type="email"]', function(event){
+    validateEmail();
+  })
+
 //finish documnent ready
 });
