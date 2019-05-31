@@ -176,18 +176,19 @@ $(document).ready(function() {
     const mail = $('#mail').val();
     const regexMail = /^\w+@\w+\.\w{1,5}$/
 
+    //if email is valid and not empty
     if(regexMail.test(mail) && mail !== ""){
       $('#emailEmpty').hide();
       $('#emailInvalid').hide();
       $('#mail').css({border: "2px solid lightgreen"});
       return true;
-    
+    //if email is empty
     } else if (!regexMail.test(mail) && mail === "" ){     
       $('#emailInvalid').hide();
       $('#emailEmpty').show();
       $('#mail').css({border: "2px solid red"});
       return false;
-    
+    //if email is in an invalid format
     } else if (!regexMail.test(mail) && mail !== "" ){
       $('#emailEmpty').hide();
       $('#emailInvalid').show();
@@ -271,9 +272,10 @@ $(document).ready(function() {
     }
   })
 
+  //vlaidate email in "real time"
   $('form').on('keyup', 'input[type="email"]', function(event){
     validateEmail();
   })
 
-//finish documnent ready
+//finish document ready
 });
